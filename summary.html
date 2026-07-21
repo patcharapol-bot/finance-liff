@@ -214,9 +214,14 @@ async function init(){
     document.getElementById('profileLine').textContent = 'เชื่อมต่อไม่สำเร็จ: liff.init() ค้างเกิน 8 วิ';
   }, 8000);
 
-  if (typeof liff === 'undefined' || LIFF_ID.indexOf('YOUR_') === 0) {
+ if (LIFF_ID.indexOf('YOUR_') === 0) {
     clearTimeout(watchdog);
-    document.getElementById('profileLine').textContent = 'ยังไม่ได้ตั้งค่า LIFF_ID';
+    document.getElementById('profileLine').textContent = 'ยังไม่ได้ตั้งค่า LIFF_ID ในไฟล์ (ยังเป็นค่า placeholder)';
+    return;
+  }
+  if (typeof liff === 'undefined') {
+    clearTimeout(watchdog);
+    document.getElementById('profileLine').textContent = 'โหลด LIFF SDK ไม่สำเร็จ (เช็คอินเทอร์เน็ต/ปิด ad blocker/ลองเปิดนอกโหมด Private)';
     return;
   }
 
