@@ -15,6 +15,7 @@
     --ink-red:#B23A2E;
     --ink-green:#2F6F4E;
     --ink-blue:#3A5A78;
+    --ink-purple:#6B4C93;
     --gold:#C9A227;
     --text-muted:#7A7360;
     --text-dark:#241F14;
@@ -55,6 +56,7 @@
   .tab[data-type="จ่าย"][data-active="true"]{ color:var(--ink-red); }
   .tab[data-type="รับ"][data-active="true"]{ color:var(--ink-green); }
   .tab[data-type="โอน"][data-active="true"]{ color:var(--ink-blue); }
+  .tab[data-type="ผ่อน"][data-active="true"]{ color:var(--ink-purple); }
 
   /* หน้ากระดาษบัญชี */
   .ledger{ background:var(--paper); flex:1; padding:22px 20px 100px; border-radius:0 0 0 0; }
@@ -68,6 +70,7 @@
   .amount-value.red{ color:var(--ink-red); }
   .amount-value.green{ color:var(--ink-green); }
   .amount-value.blue{ color:var(--ink-blue); }
+  .amount-value.purple{ color:var(--ink-purple); }
 
   .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
   .key{
@@ -120,6 +123,7 @@
   .stamp-btn.red{ background:var(--ink-red); }
   .stamp-btn.green{ background:var(--ink-green); }
   .stamp-btn.blue{ background:var(--ink-blue); }
+  .stamp-btn.purple{ background:var(--ink-purple); }
   .stamp-btn:active{ transform:scale(0.98); }
   .stamp-btn:disabled{ opacity:.5; }
 
@@ -149,6 +153,7 @@
     <button class="tab" data-type="จ่าย" data-active="true">จ่าย</button>
     <button class="tab" data-type="รับ">รับ</button>
     <button class="tab" data-type="โอน">โอน</button>
+    <button class="tab" data-type="ผ่อน">ผ่อน</button>
   </div>
 
   <div class="ledger">
@@ -183,6 +188,11 @@
       <div class="chips" id="categoryChips"></div>
     </div>
 
+    <div class="field" id="totalTermsField" style="display:none;">
+      <div class="field-label">จำนวนงวด</div>
+      <input class="note-input" id="totalTermsInput" type="number" inputmode="numeric" min="1" step="1" placeholder="เช่น 10">
+    </div>
+
     <div class="field">
       <div class="field-label">โน้ต (ไม่บังคับ)</div>
       <input class="note-input" id="noteInput" type="text" placeholder="เช่น ข้าวเที่ยงกับเพื่อน">
@@ -206,10 +216,10 @@
 const LIFF_ID = '2010765349-ulfFDLpR';        // จาก LINE Developers Console แท็บ LIFF
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyPDfZlGd36J0RkYWNgvoe4IKsTGTYoggu6GUiYQQlrNpTncbkE6ozvTq44TyaxwH-gLA/exec'; // URL /exec เดียวกับที่ใช้เป็น webhook
 
-const TYPE_COLOR = { 'จ่าย':'red', 'รับ':'green', 'โอน':'blue' };
+const TYPE_COLOR = { 'จ่าย':'red', 'รับ':'green', 'โอน':'blue', 'ผ่อน':'purple' };
 let state = { type:'จ่าย', amount:'0', account:null, source:null, dest:null, category:null, note:'', userId:null };
 let accounts = [];
-const CATEGORY_PRESETS = { 'จ่าย':['อาหาร','เดินทาง','ช้อปปิ้ง','บิล/ค่าใช้จ่ายประจำ','บันเทิง','สุขภาพ','อื่นๆ'], 'รับ':['เงินเดือน','โบนัส','รายได้เสริม','อื่นๆ'] };
+const CATEGORY_PRESETS = { 'จ่าย':['อาหาร','เดินทาง','ช้อปปิ้ง','บิล/ค่าใช้จ่ายประจำ','บันเทิง','สุขภาพ','อื่นๆ'], 'รับ':['เงินเดือน','โบนัส','รายได้เสริม','อื่นๆ'], 'ผ่อน':['ของใช้','อิเล็กทรอนิกส์','เฟอร์นิเจอร์','อื่นๆ'] };
 
 function toast(msg){
   const t = document.getElementById('toast');
@@ -323,10 +333,14 @@ function render(){
   document.getElementById('submitBtn').className = 'stamp-btn ' + color;
 
   const isTransfer = state.type === 'โอน';
+  const isInstallment = state.type === 'ผ่อน';
   document.getElementById('singleAccountField').style.display = isTransfer ? 'none' : 'block';
   document.getElementById('transferFields').style.display = isTransfer ? 'block' : 'none';
   document.getElementById('categoryField').style.display = isTransfer ? 'none' : 'block';
-  document.getElementById('accountLabel').textContent = state.type === 'จ่าย' ? 'จ่ายจากบัญชี/บัตร' : 'เข้าบัญชี';
+  document.getElementById('totalTermsField').style.display = isInstallment ? 'block' : 'none';
+  document.getElementById('accountLabel').textContent =
+    state.type === 'จ่าย' ? 'จ่ายจากบัญชี/บัตร' :
+    state.type === 'ผ่อน' ? 'ตัดจากบัตร' : 'เข้าบัญชี';
 
   renderCategoryChips();
 }
@@ -334,8 +348,16 @@ function render(){
 async function submit(){
   const amt = parseFloat(state.amount);
   if(!amt || amt <= 0){ setStatus('กรอกจำนวนเงินก่อน', 'err'); return; }
+
+  let totalTerms = '';
   if(state.type === 'โอน'){
     if(!state.source || !state.dest){ setStatus('เลือกต้นทางและปลายทางให้ครบ', 'err'); return; }
+  } else if(state.type === 'ผ่อน'){
+    if(!state.account){ setStatus('เลือกบัตรก่อน', 'err'); return; }
+    totalTerms = document.getElementById('totalTermsInput').value;
+    if(!totalTerms || Number(totalTerms) <= 0 || !Number.isInteger(Number(totalTerms))){
+      setStatus('กรอกจำนวนงวดให้ถูกต้อง', 'err'); return;
+    }
   } else {
     if(!state.account){ setStatus('เลือกบัญชี/บัตรก่อน', 'err'); return; }
   }
@@ -346,7 +368,8 @@ async function submit(){
   const params = new URLSearchParams({
     action: 'save', userId: state.userId || '', type: state.type, amount: amt,
     accountId: state.account || '', sourceId: state.source || '', destId: state.dest || '',
-    category: state.category || '', note: document.getElementById('noteInput').value || ''
+    category: state.category || '', note: document.getElementById('noteInput').value || '',
+    totalTerms: totalTerms
   });
 
   try{
@@ -354,6 +377,7 @@ async function submit(){
     if(data.ok){
       setStatus('บันทึกแล้ว ✅ ' + amt.toLocaleString() + ' บาท', 'ok');
       state.amount = '0'; state.category = null; document.getElementById('noteInput').value = '';
+      document.getElementById('totalTermsInput').value = '';
       document.getElementById('amountDisplay').textContent = '0';
       renderCategoryChips();
       setTimeout(()=>{ if(liff.isInClient()) liff.closeWindow(); }, 900);
