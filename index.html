@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>สมุดบัญชี</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cover:#14312A;
+    --cover-dark:#0E241F;
+    --paper:#F6F1E4;
+    --paper-line:#E4DBC4;
+    --ink-red:#B23A2E;
+    --ink-green:#2F6F4E;
+    --ink-blue:#3A5A78;
+    --gold:#C9A227;
+    --text-muted:#7A7360;
+    --text-dark:#241F14;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; background:var(--cover); min-height:100%;}
+  body{
+    font-family:'IBM Plex Sans Thai', sans-serif;
+    color:var(--text-dark);
+    background:linear-gradient(180deg, var(--cover) 0%, var(--cover-dark) 100%);
+    display:flex; justify-content:center;
+  }
+  .app{ width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; }
+
+  /* ปกสมุดบัญชี */
+  .cover{
+    padding:22px 20px 16px;
+    position:relative;
+  }
+  .cover::after{
+    content:''; position:absolute; left:20px; right:20px; bottom:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .cover h1{
+    font-family:'Noto Serif Thai', serif; font-weight:700; color:var(--paper);
+    font-size:22px; margin:0 0 2px;
+  }
+  .cover p{ color:#9CB8AC; font-size:12.5px; margin:0; }
+
+  /* แท็บประเภทธุรกรรม */
+  .tabs{ display:flex; gap:8px; padding:14px 20px 0; }
+  .tab{
+    flex:1; text-align:center; padding:10px 0; border-radius:8px 8px 0 0;
+    font-weight:600; font-size:14.5px; color:#B9C9C1; background:rgba(255,255,255,0.05);
+    border:none; font-family:inherit; cursor:pointer;
+  }
+  .tab[data-active="true"]{ background:var(--paper); color:var(--text-dark); }
+  .tab[data-type="จ่าย"][data-active="true"]{ color:var(--ink-red); }
+  .tab[data-type="รับ"][data-active="true"]{ color:var(--ink-green); }
+  .tab[data-type="โอน"][data-active="true"]{ color:var(--ink-blue); }
+
+  /* หน้ากระดาษบัญชี */
+  .ledger{ background:var(--paper); flex:1; padding:22px 20px 100px; border-radius:0 0 0 0; }
+
+  .amount-row{ text-align:center; padding:6px 0 18px; }
+  .amount-label{ font-size:11.5px; letter-spacing:.08em; color:var(--text-muted); margin-bottom:6px; }
+  .amount-value{
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:44px;
+    letter-spacing:.01em; min-height:52px;
+  }
+  .amount-value.red{ color:var(--ink-red); }
+  .amount-value.green{ color:var(--ink-green); }
+  .amount-value.blue{ color:var(--ink-blue); }
+
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+  .key{
+    background:#fff; border:1px solid var(--paper-line); border-radius:10px;
+    font-family:'IBM Plex Mono', monospace; font-size:19px; font-weight:600; color:var(--text-dark);
+    padding:13px 0; cursor:pointer;
+  }
+  .key:active{ background:#EFE8D6; }
+  .key.wide{ font-size:14px; color:var(--text-muted); }
+
+  /* เส้นปรุฉีก */
+  .perforation{ position:relative; height:1px; margin:18px -20px 18px; }
+  .perforation::before{
+    content:''; position:absolute; left:0; right:0; top:0; height:1px;
+    background-image:linear-gradient(90deg, var(--paper-line) 60%, transparent 0);
+    background-size:12px 1px; background-repeat:repeat-x;
+  }
+  .perforation .notch{
+    position:absolute; top:-7px; width:14px; height:14px; border-radius:50%; background:var(--cover);
+  }
+  .perforation .notch.left{ left:-7px; } .perforation .notch.right{ right:-7px; }
+
+  .field{ margin-bottom:16px; }
+  .field-label{ font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    padding:8px 14px; border-radius:20px; border:1px solid var(--paper-line); background:#fff;
+    font-size:13.5px; font-weight:500; color:var(--text-dark); cursor:pointer; font-family:inherit;
+  }
+  .chip[data-active="true"]{ background:var(--cover); color:var(--paper); border-color:var(--cover); }
+
+  .note-input{
+    width:100%; padding:11px 12px; border-radius:8px; border:1px solid var(--paper-line);
+    font-family:inherit; font-size:14px; background:#fff; color:var(--text-dark);
+  }
+
+  .transfer-row{ display:flex; align-items:center; gap:8px; }
+  .transfer-row .arrow{ color:var(--text-muted); font-size:16px; }
+
+  /* ปุ่มบันทึกแบบตราปั๊ม */
+  .submit-bar{
+    position:fixed; left:0; right:0; bottom:0; display:flex; justify-content:center;
+    padding:14px 20px calc(14px + env(safe-area-inset-bottom)); background:linear-gradient(180deg, rgba(246,241,228,0), var(--paper) 30%);
+  }
+  .submit-bar-inner{ width:100%; max-width:440px; }
+  .stamp-btn{
+    width:100%; border:none; border-radius:12px; padding:15px 0; font-family:'IBM Plex Sans Thai', sans-serif;
+    font-size:16px; font-weight:600; color:#fff; cursor:pointer; letter-spacing:.02em;
+  }
+  .stamp-btn.red{ background:var(--ink-red); }
+  .stamp-btn.green{ background:var(--ink-green); }
+  .stamp-btn.blue{ background:var(--ink-blue); }
+  .stamp-btn:active{ transform:scale(0.98); }
+  .stamp-btn:disabled{ opacity:.5; }
+
+  .status{
+    text-align:center; font-size:13px; color:var(--text-muted); min-height:18px; margin-top:2px;
+  }
+  .status.ok{ color:var(--ink-green); font-weight:600; }
+  .status.err{ color:var(--ink-red); font-weight:600; }
+
+  .toast{
+    position:fixed; top:16px; left:50%; transform:translateX(-50%);
+    background:var(--cover); color:var(--paper); padding:10px 18px; border-radius:8px;
+    font-size:13.5px; opacity:0; transition:opacity .25s; pointer-events:none; max-width:90%; text-align:center;
+  }
+  .toast.show{ opacity:1; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="cover">
+    <h1>สมุดบัญชี</h1>
+    <p id="profileLine">กำลังเชื่อมต่อ…</p>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab" data-type="จ่าย" data-active="true">จ่าย</button>
+    <button class="tab" data-type="รับ">รับ</button>
+    <button class="tab" data-type="โอน">โอน</button>
+  </div>
+
+  <div class="ledger">
+
+    <div class="amount-row">
+      <div class="amount-label">จำนวนเงิน (บาท)</div>
+      <div class="amount-value red" id="amountDisplay">0</div>
+    </div>
+
+    <div class="keypad" id="keypad">
+      <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+      <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+      <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+      <button class="key wide" data-k=".">.</button><button class="key" data-k="0">0</button><button class="key wide" data-k="back">⌫</button>
+    </div>
+
+    <div class="perforation"><span class="notch left"></span><span class="notch right"></span></div>
+
+    <div id="singleAccountField" class="field">
+      <div class="field-label" id="accountLabel">บัญชี/บัตร</div>
+      <div class="chips" id="accountChips"></div>
+    </div>
+
+    <div id="transferFields" class="field" style="display:none;">
+      <div class="field-label">ต้นทาง → ปลายทาง</div>
+      <div class="chips" id="sourceChips" style="margin-bottom:8px;"></div>
+      <div class="chips" id="destChips"></div>
+    </div>
+
+    <div class="field" id="categoryField">
+      <div class="field-label">หมวดหมู่</div>
+      <div class="chips" id="categoryChips"></div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">โน้ต (ไม่บังคับ)</div>
+      <input class="note-input" id="noteInput" type="text" placeholder="เช่น ข้าวเที่ยงกับเพื่อน">
+    </div>
+
+    <div class="status" id="statusLine"></div>
+  </div>
+
+  <div class="submit-bar">
+    <div class="submit-bar-inner">
+      <button class="stamp-btn red" id="submitBtn">บันทึกรายการ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+// ตั้งค่า 2 ค่านี้ให้ครบก่อนใช้งานจริง
+const LIFF_ID = 'YOUR_LIFF_ID_HERE';        // จาก LINE Developers Console แท็บ LIFF
+const WEBAPP_URL = 'YOUR_WEBAPP_EXEC_URL_HERE'; // URL /exec เดียวกับที่ใช้เป็น webhook
+
+const TYPE_COLOR = { 'จ่าย':'red', 'รับ':'green', 'โอน':'blue' };
+let state = { type:'จ่าย', amount:'0', account:null, source:null, dest:null, category:null, note:'', userId:null };
+let accounts = [];
+const CATEGORY_PRESETS = { 'จ่าย':['อาหาร','เดินทาง','ช้อปปิ้ง','บิล/ค่าใช้จ่ายประจำ','บันเทิง','สุขภาพ','อื่นๆ'], 'รับ':['เงินเดือน','โบนัส','รายได้เสริม','อื่นๆ'] };
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+async function init(){
+  bindEvents();
+  render();
+
+  const watchdog = setTimeout(() => {
+    document.getElementById('profileLine').textContent = 'เชื่อมต่อไม่สำเร็จ: liff.init() ค้างเกิน 8 วิ (เช็คว่าใส่ LIFF_ID ถูกต้อง และ deploy เวอร์ชันใหม่แล้ว)';
+  }, 8000);
+
+  if (typeof liff === 'undefined') {
+    clearTimeout(watchdog);
+    document.getElementById('profileLine').textContent = 'โหลด LIFF SDK ไม่สำเร็จ (เช็คอินเทอร์เน็ต/ลองเปิดใหม่)';
+    loadAccounts();
+    return;
+  }
+  if (LIFF_ID.indexOf('YOUR_') === 0) {
+    clearTimeout(watchdog);
+    document.getElementById('profileLine').textContent = 'ยังไม่ได้ใส่ LIFF_ID จริงในไฟล์ Liff.html';
+    loadAccounts();
+    return;
+  }
+
+  try{
+    await liff.init({ liffId: LIFF_ID });
+    clearTimeout(watchdog);
+    if(!liff.isLoggedIn()){ liff.login(); return; }
+    const profile = await liff.getProfile();
+    state.userId = profile.userId;
+    document.getElementById('profileLine').textContent = 'บันทึกในนาม ' + profile.displayName;
+  }catch(err){
+    clearTimeout(watchdog);
+    document.getElementById('profileLine').textContent = 'เชื่อมต่อ LINE ไม่สำเร็จ: ' + (err && err.message ? err.message : JSON.stringify(err));
+  }
+  loadAccounts();
+}
+
+async function loadAccounts(){
+  try{
+    const res = await fetch(WEBAPP_URL + '?action=accounts');
+    accounts = await res.json();
+  }catch(err){ toast('โหลดรายชื่อบัญชีไม่สำเร็จ'); accounts = []; }
+  renderAccountChips();
+}
+
+function renderAccountChips(){
+  const single = document.getElementById('accountChips');
+  const src = document.getElementById('sourceChips');
+  const dst = document.getElementById('destChips');
+  [single, src, dst].forEach(el => el.innerHTML = '');
+  accounts.forEach(acc => {
+    single.appendChild(makeChip(acc.name, () => { state.account = acc.id; renderAccountChips(); }, state.account === acc.id));
+    src.appendChild(makeChip(acc.name, () => { state.source = acc.id; renderAccountChips(); }, state.source === acc.id));
+    dst.appendChild(makeChip(acc.name, () => { state.dest = acc.id; renderAccountChips(); }, state.dest === acc.id));
+  });
+}
+
+function makeChip(label, onClick, active){
+  const b = document.createElement('button');
+  b.className = 'chip'; b.textContent = label; b.type = 'button';
+  b.dataset.active = active ? 'true' : 'false';
+  b.onclick = onClick;
+  return b;
+}
+
+function renderCategoryChips(){
+  const el = document.getElementById('categoryChips');
+  el.innerHTML = '';
+  const list = CATEGORY_PRESETS[state.type] || [];
+  list.forEach(cat => el.appendChild(makeChip(cat, () => { state.category = cat; renderCategoryChips(); }, state.category === cat)));
+}
+
+function bindEvents(){
+  document.getElementById('tabs').addEventListener('click', e => {
+    const btn = e.target.closest('.tab'); if(!btn) return;
+    state.type = btn.dataset.type; state.category = null;
+    render();
+  });
+  document.getElementById('keypad').addEventListener('click', e => {
+    const btn = e.target.closest('.key'); if(!btn) return;
+    const k = btn.dataset.k;
+    if(k === 'back'){ state.amount = state.amount.length > 1 ? state.amount.slice(0,-1) : '0'; }
+    else if(k === '.'){ if(!state.amount.includes('.')) state.amount += '.'; }
+    else { state.amount = (state.amount === '0') ? k : state.amount + k; }
+    document.getElementById('amountDisplay').textContent = state.amount;
+  });
+  document.getElementById('submitBtn').addEventListener('click', submit);
+}
+
+function render(){
+  document.querySelectorAll('.tab').forEach(t => t.dataset.active = (t.dataset.type === state.type) ? 'true' : 'false');
+  const color = TYPE_COLOR[state.type];
+  document.getElementById('amountDisplay').className = 'amount-value ' + color;
+  document.getElementById('submitBtn').className = 'stamp-btn ' + color;
+
+  const isTransfer = state.type === 'โอน';
+  document.getElementById('singleAccountField').style.display = isTransfer ? 'none' : 'block';
+  document.getElementById('transferFields').style.display = isTransfer ? 'block' : 'none';
+  document.getElementById('categoryField').style.display = isTransfer ? 'none' : 'block';
+  document.getElementById('accountLabel').textContent = state.type === 'จ่าย' ? 'จ่ายจากบัญชี/บัตร' : 'เข้าบัญชี';
+
+  renderCategoryChips();
+}
+
+async function submit(){
+  const amt = parseFloat(state.amount);
+  if(!amt || amt <= 0){ setStatus('กรอกจำนวนเงินก่อน', 'err'); return; }
+  if(state.type === 'โอน'){
+    if(!state.source || !state.dest){ setStatus('เลือกต้นทางและปลายทางให้ครบ', 'err'); return; }
+  } else {
+    if(!state.account){ setStatus('เลือกบัญชี/บัตรก่อน', 'err'); return; }
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; setStatus('กำลังบันทึก…', '');
+
+  const payload = {
+    source: 'liff', userId: state.userId, type: state.type, amount: amt,
+    accountId: state.account, sourceId: state.source, destId: state.dest,
+    category: state.category || '', note: document.getElementById('noteInput').value || ''
+  };
+
+  try{
+    const res = await fetch(WEBAPP_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(data.ok){
+      setStatus('บันทึกแล้ว ✅ ' + amt.toLocaleString() + ' บาท', 'ok');
+      state.amount = '0'; state.category = null; document.getElementById('noteInput').value = '';
+      document.getElementById('amountDisplay').textContent = '0';
+      renderCategoryChips();
+      setTimeout(()=>{ if(liff.isInClient()) liff.closeWindow(); }, 900);
+    } else {
+      setStatus(data.message || 'บันทึกไม่สำเร็จ', 'err');
+    }
+  }catch(err){
+    setStatus('เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง', 'err');
+  }
+  btn.disabled = false;
+}
+
+function setStatus(msg, cls){
+  const el = document.getElementById('statusLine');
+  el.textContent = msg; el.className = 'status ' + (cls || '');
+}
+
+init();
+</script>
+</body>
+</html>
