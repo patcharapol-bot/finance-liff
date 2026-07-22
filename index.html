@@ -42,10 +42,7 @@
   .app{ width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; }
 
   /* ปกสมุดบัญชี */
-  .cover{
-    padding:22px 20px 16px;
-    position:relative;
-  }
+  .cover{ padding:22px 20px 16px; position:relative; }
   .cover::after{
     content:''; position:absolute; left:20px; right:20px; bottom:0; height:1px;
     background:linear-gradient(90deg, transparent, var(--gold), transparent);
@@ -59,10 +56,10 @@
   .cover p{ color:var(--text-muted); font-size:12.5px; margin:0; font-family:'IBM Plex Mono', monospace; }
 
   /* แท็บประเภทธุรกรรม */
-  .tabs{ display:flex; gap:8px; padding:14px 20px 0; }
+  .tabs{ display:flex; gap:6px; padding:14px 20px 0; }
   .tab{
-    flex:1; text-align:center; padding:10px 0; border-radius:6px 6px 0 0;
-    font-weight:600; font-size:14.5px; color:var(--text-muted); background:var(--panel);
+    flex:1; text-align:center; padding:10px 4px; border-radius:6px 6px 0 0;
+    font-weight:600; font-size:13px; color:var(--text-muted); background:var(--panel);
     border:1px solid var(--paper-line); border-bottom:none;
     font-family:'IBM Plex Sans Thai', sans-serif; cursor:pointer;
   }
@@ -77,16 +74,13 @@
 
   .amount-row{ text-align:center; padding:6px 0 18px; }
   .amount-label{ font-size:11px; letter-spacing:.12em; color:var(--text-muted); margin-bottom:6px; font-family:'IBM Plex Mono', monospace; text-transform:uppercase; }
-  .amount-value{
-    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:44px;
-    letter-spacing:.01em; min-height:52px;
-  }
+  .amount-value{ font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:44px; letter-spacing:.01em; min-height:52px; }
   .amount-value.red{ color:var(--ink-red); text-shadow:0 0 14px rgba(255,77,61,.45); }
   .amount-value.green{ color:var(--ink-green); text-shadow:0 0 14px rgba(51,255,102,.45); }
   .amount-value.blue{ color:var(--ink-blue); text-shadow:0 0 14px rgba(47,224,168,.45); }
   .amount-value.purple{ color:var(--ink-purple); text-shadow:0 0 14px rgba(201,230,58,.45); }
 
-  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:10px; }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
   .key{
     background:var(--panel); border:1px solid var(--paper-line); border-radius:8px;
     font-family:'IBM Plex Mono', monospace; font-size:19px; font-weight:600; color:var(--text-dark);
@@ -102,20 +96,39 @@
     background-image:linear-gradient(90deg, var(--paper-line) 60%, transparent 0);
     background-size:12px 1px; background-repeat:repeat-x;
   }
-  .perforation .notch{
-    position:absolute; top:-7px; width:14px; height:14px; border-radius:50%; background:var(--cover);
-    border:1px solid var(--paper-line);
-  }
+  .perforation .notch{ position:absolute; top:-7px; width:14px; height:14px; border-radius:50%; background:var(--cover); border:1px solid var(--paper-line); }
   .perforation .notch.left{ left:-7px; } .perforation .notch.right{ right:-7px; }
 
   .field{ margin-bottom:16px; }
   .field-label{ font-size:12px; color:var(--text-muted); margin-bottom:8px; font-weight:600; font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .field-label-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .field-label-row .field-label{ margin-bottom:0; }
+  .add-cat-btn{ background:transparent; border:1px solid var(--paper-line); color:var(--ink-green);
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; padding:4px 10px; border-radius:4px; cursor:pointer; }
+
   .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chips:not(:empty){ margin-bottom:8px; }
   .chip{
     padding:8px 14px; border-radius:4px; border:1px solid var(--paper-line); background:var(--panel);
     font-size:13.5px; font-weight:500; color:var(--text-dark); cursor:pointer; font-family:inherit;
   }
   .chip[data-active="true"]{ background:rgba(51,255,102,.12); color:var(--ink-green); border-color:var(--ink-green); text-shadow:0 0 6px rgba(51,255,102,.4); }
+
+  .dropdown{
+    width:100%; padding:11px 34px 11px 12px; border-radius:6px; border:1px solid var(--paper-line);
+    font-family:'IBM Plex Sans Thai', sans-serif; font-size:14px; background:var(--panel); color:var(--text-dark);
+    appearance:none; -webkit-appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, var(--ink-green) 50%), linear-gradient(135deg, var(--ink-green) 50%, transparent 50%);
+    background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+  }
+  .dropdown:focus{ outline:none; border-color:var(--ink-green); box-shadow:0 0 0 1px var(--ink-green); }
+
+  .inline-add{ display:flex; gap:6px; margin-top:8px; }
+  .inline-add .note-input{ flex:1; }
+  .mini-btn{ padding:0 12px; border-radius:6px; border:1px solid var(--ink-green); background:var(--ink-green);
+    color:var(--cover-dark); font-family:'IBM Plex Mono', monospace; font-size:12.5px; font-weight:700; cursor:pointer; }
+  .mini-btn.ghost{ background:transparent; color:var(--text-muted); border-color:var(--paper-line); }
 
   .note-input{
     width:100%; padding:11px 12px; border-radius:6px; border:1px solid var(--paper-line);
@@ -123,8 +136,10 @@
   }
   .note-input:focus{ outline:none; border-color:var(--ink-green); box-shadow:0 0 0 1px var(--ink-green); }
 
-  .transfer-row{ display:flex; align-items:center; gap:8px; }
-  .transfer-row .arrow{ color:var(--text-muted); font-size:16px; }
+  .segmented{ display:flex; gap:8px; }
+  .seg-btn{ flex:1; padding:10px 0; border-radius:6px; border:1px solid var(--paper-line); background:var(--panel);
+    color:var(--text-dark); font-family:'IBM Plex Mono', monospace; font-size:13.5px; cursor:pointer; }
+  .seg-btn[data-active="true"]{ background:rgba(51,255,102,.12); color:var(--ink-green); border-color:var(--ink-green); text-shadow:0 0 6px rgba(51,255,102,.4); }
 
   /* ปุ่มบันทึกแบบตราปั๊ม */
   .submit-bar{
@@ -143,9 +158,7 @@
   .stamp-btn:active{ transform:scale(0.98); }
   .stamp-btn:disabled{ opacity:.5; }
 
-  .status{
-    text-align:center; font-size:13px; color:var(--text-muted); min-height:18px; margin-top:2px; font-family:'IBM Plex Mono', monospace;
-  }
+  .status{ text-align:center; font-size:13px; color:var(--text-muted); min-height:18px; margin-top:2px; font-family:'IBM Plex Mono', monospace; }
   .status.ok{ color:var(--ink-green); font-weight:600; }
   .status.err{ color:var(--ink-red); font-weight:600; }
 
@@ -170,7 +183,7 @@
   <div class="tabs" id="tabs">
     <button class="tab" data-type="จ่าย" data-active="true">จ่าย</button>
     <button class="tab" data-type="รับ">รับ</button>
-    <button class="tab" data-type="โอน">โอน</button>
+    <button class="tab" data-type="โอน">โอน/จ่ายบัตร</button>
     <button class="tab" data-type="ผ่อน">ผ่อน</button>
   </div>
 
@@ -190,25 +203,80 @@
 
     <div class="perforation"><span class="notch left"></span><span class="notch right"></span></div>
 
-    <div id="singleAccountField" class="field">
-      <div class="field-label" id="accountLabel">บัญชี/บัตร</div>
-      <div class="chips" id="accountChips"></div>
+    <!-- จ่าย: แยกดรอปดาวน์บัญชี / บัตร -->
+    <div id="payFields" class="field-group" style="display:none;">
+      <div class="field">
+        <div class="field-label">จ่ายจากบัญชี</div>
+        <div class="chips" id="payAccountQuick"></div>
+        <select class="dropdown" id="payAccountSelect"><option value="">เลือกบัญชี…</option></select>
+      </div>
+      <div class="field">
+        <div class="field-label">จ่ายจากบัตร</div>
+        <div class="chips" id="payCardQuick"></div>
+        <select class="dropdown" id="payCardSelect"><option value="">เลือกบัตร…</option></select>
+      </div>
     </div>
 
-    <div id="transferFields" class="field" style="display:none;">
-      <div class="field-label">ต้นทาง → ปลายทาง</div>
-      <div class="chips" id="sourceChips" style="margin-bottom:8px;"></div>
-      <div class="chips" id="destChips"></div>
+    <!-- รับ: บัญชีธนาคาร/เงินสดเท่านั้น -->
+    <div id="receiveFields" class="field-group" style="display:none;">
+      <div class="field">
+        <div class="field-label">เข้าบัญชี</div>
+        <div class="chips" id="receiveAccountQuick"></div>
+        <select class="dropdown" id="receiveAccountSelect"><option value="">เลือกบัญชี…</option></select>
+      </div>
     </div>
 
+    <!-- โอน/จ่ายบัตร: ต้นทาง-ปลายทาง -->
+    <div id="transferFields" class="field-group" style="display:none;">
+      <div class="field">
+        <div class="field-label">ต้นทาง</div>
+        <div class="chips" id="transferSourceQuick"></div>
+        <select class="dropdown" id="transferSourceSelect"><option value="">เลือกต้นทาง…</option></select>
+      </div>
+      <div class="field">
+        <div class="field-label">ปลายทาง</div>
+        <div class="chips" id="transferDestQuick"></div>
+        <select class="dropdown" id="transferDestSelect"><option value="">เลือกปลายทาง…</option></select>
+      </div>
+    </div>
+
+    <!-- ผ่อน: บัตรเท่านั้น -->
+    <div id="installmentFields" class="field-group" style="display:none;">
+      <div class="field">
+        <div class="field-label">ตัดจากบัตร</div>
+        <div class="chips" id="installmentCardQuick"></div>
+        <select class="dropdown" id="installmentCardSelect"><option value="">เลือกบัตร…</option></select>
+      </div>
+    </div>
+
+    <!-- หมวดหมู่: ใช้ร่วมกันทุกแท็บยกเว้นโอน -->
     <div class="field" id="categoryField">
-      <div class="field-label">หมวดหมู่</div>
-      <div class="chips" id="categoryChips"></div>
+      <div class="field-label-row">
+        <div class="field-label">หมวดหมู่</div>
+        <button type="button" class="add-cat-btn" id="addCategoryBtn">+ เพิ่มหมวด</button>
+      </div>
+      <div class="chips" id="categoryQuick"></div>
+      <select class="dropdown" id="categorySelect"><option value="">เลือกหมวดหมู่…</option></select>
+      <div class="inline-add" id="categoryAddRow" style="display:none;">
+        <input class="note-input" id="newCategoryInput" placeholder="ชื่อหมวดใหม่">
+        <button type="button" class="mini-btn" id="confirmAddCategoryBtn">บันทึก</button>
+        <button type="button" class="mini-btn ghost" id="cancelAddCategoryBtn">ยกเลิก</button>
+      </div>
     </div>
 
     <div class="field" id="totalTermsField" style="display:none;">
       <div class="field-label">จำนวนงวด</div>
       <input class="note-input" id="totalTermsInput" type="number" inputmode="numeric" min="1" step="1" placeholder="เช่น 10">
+    </div>
+
+    <div class="field" id="interestField" style="display:none;">
+      <div class="field-label">ดอกเบี้ย</div>
+      <div class="segmented" id="interestToggle">
+        <button type="button" class="seg-btn" data-val="0%" data-active="true">0%</button>
+        <button type="button" class="seg-btn" data-val="อื่นๆ">อื่นๆ</button>
+      </div>
+      <input class="note-input" id="interestRateInput" type="number" inputmode="decimal" step="0.01" min="0"
+        placeholder="% ต่อเดือน เช่น 1.5" style="display:none; margin-top:8px;">
     </div>
 
     <div class="field">
@@ -235,9 +303,15 @@ const LIFF_ID = '2010765349-ulfFDLpR';        // จาก LINE Developers Conso
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbyPDfZlGd36J0RkYWNgvoe4IKsTGTYoggu6GUiYQQlrNpTncbkE6ozvTq44TyaxwH-gLA/exec'; // URL /exec เดียวกับที่ใช้เป็น webhook
 
 const TYPE_COLOR = { 'จ่าย':'red', 'รับ':'green', 'โอน':'blue', 'ผ่อน':'purple' };
-let state = { type:'จ่าย', amount:'0', account:null, source:null, dest:null, category:null, note:'', userId:null };
-let accounts = [];
-const CATEGORY_PRESETS = { 'จ่าย':['อาหาร','เดินทาง','ช้อปปิ้ง','บิล/ค่าใช้จ่ายประจำ','บันเทิง','สุขภาพ','อื่นๆ'], 'รับ':['เงินเดือน','โบนัส','รายได้เสริม','อื่นๆ'], 'ผ่อน':['ของใช้','อิเล็กทรอนิกส์','เฟอร์นิเจอร์','อื่นๆ'] };
+
+let state = {
+  type:'จ่าย', amount:'0',
+  account:null, source:null, dest:null, category:null, note:'',
+  userId:null, totalTerms:'', interestType:'0%', interestRate:''
+};
+
+// meta.accounts: [{id,name,type}], meta.categories: {จ่าย:[...],รับ:[...],ผ่อน:[...]}, meta.frequent: {...}
+let meta = { accounts: [], categories: {}, frequent: {} };
 
 function toast(msg){
   const t = document.getElementById('toast');
@@ -256,13 +330,13 @@ async function init(){
   if (typeof liff === 'undefined') {
     clearTimeout(watchdog);
     document.getElementById('profileLine').textContent = 'โหลด LIFF SDK ไม่สำเร็จ (เช็คอินเทอร์เน็ต/ลองเปิดใหม่)';
-    loadAccounts();
+    loadFormMeta();
     return;
   }
   if (LIFF_ID.indexOf('YOUR_') === 0) {
     clearTimeout(watchdog);
     document.getElementById('profileLine').textContent = 'ยังไม่ได้ใส่ LIFF_ID จริงในไฟล์ Liff.html';
-    loadAccounts();
+    loadFormMeta();
     return;
   }
 
@@ -277,7 +351,7 @@ async function init(){
     clearTimeout(watchdog);
     document.getElementById('profileLine').textContent = 'เชื่อมต่อ LINE ไม่สำเร็จ: ' + (err && err.message ? err.message : JSON.stringify(err));
   }
-  loadAccounts();
+  loadFormMeta();
 }
 
 function jsonp(url){
@@ -293,24 +367,20 @@ function jsonp(url){
   });
 }
 
-async function loadAccounts(){
+async function loadFormMeta(){
   try{
-    accounts = await jsonp(WEBAPP_URL + '?action=accounts');
-  }catch(err){ toast('โหลดรายชื่อบัญชีไม่สำเร็จ'); accounts = []; }
-  renderAccountChips();
+    meta = await jsonp(WEBAPP_URL + '?action=formMeta');
+    if(!meta.categories) meta.categories = {};
+    if(!meta.accounts) meta.accounts = [];
+    if(!meta.frequent) meta.frequent = {};
+  }catch(err){
+    toast('โหลดข้อมูลฟอร์มไม่สำเร็จ');
+    meta = { accounts: [], categories: {}, frequent: {} };
+  }
+  renderPickers();
 }
 
-function renderAccountChips(){
-  const single = document.getElementById('accountChips');
-  const src = document.getElementById('sourceChips');
-  const dst = document.getElementById('destChips');
-  [single, src, dst].forEach(el => el.innerHTML = '');
-  accounts.forEach(acc => {
-    single.appendChild(makeChip(acc.name, () => { state.account = acc.id; renderAccountChips(); }, state.account === acc.id));
-    src.appendChild(makeChip(acc.name, () => { state.source = acc.id; renderAccountChips(); }, state.source === acc.id));
-    dst.appendChild(makeChip(acc.name, () => { state.dest = acc.id; renderAccountChips(); }, state.dest === acc.id));
-  });
-}
+/* ---------- ตัวช่วย render ช่อง "ใช้บ่อย" + ดรอปดาวน์ ---------- */
 
 function makeChip(label, onClick, active){
   const b = document.createElement('button');
@@ -320,19 +390,103 @@ function makeChip(label, onClick, active){
   return b;
 }
 
-function renderCategoryChips(){
-  const el = document.getElementById('categoryChips');
-  el.innerHTML = '';
-  const list = CATEGORY_PRESETS[state.type] || [];
-  list.forEach(cat => el.appendChild(makeChip(cat, () => { state.category = cat; renderCategoryChips(); }, state.category === cat)));
+// fullList / quickList: [{id,name}]
+function populatePicker(quickEl, selectEl, fullList, quickList, selectedValue, onPick){
+  quickEl.innerHTML = '';
+  quickList.forEach(item => {
+    quickEl.appendChild(makeChip(item.name, () => onPick(item.id), selectedValue === item.id));
+  });
+  const options = ['<option value="">เลือก…</option>'].concat(
+    fullList.map(item => `<option value="${item.id}"${selectedValue === item.id ? ' selected' : ''}>${item.name}</option>`)
+  );
+  selectEl.innerHTML = options.join('');
 }
+
+function renderPickers(){
+  const bankAccounts = meta.accounts.filter(a => a.type !== 'บัตรเครดิต');
+  const cardAccounts = meta.accounts.filter(a => a.type === 'บัตรเครดิต');
+  const allAccounts = meta.accounts;
+  const freq = meta.frequent;
+
+  populatePicker(
+    document.getElementById('payAccountQuick'), document.getElementById('payAccountSelect'),
+    bankAccounts, freq.payAccount || [], state.type === 'จ่าย' ? state.account : null,
+    id => { state.account = id; renderPickers(); }
+  );
+  populatePicker(
+    document.getElementById('payCardQuick'), document.getElementById('payCardSelect'),
+    cardAccounts, freq.payCard || [], state.type === 'จ่าย' ? state.account : null,
+    id => { state.account = id; renderPickers(); }
+  );
+  populatePicker(
+    document.getElementById('receiveAccountQuick'), document.getElementById('receiveAccountSelect'),
+    bankAccounts, freq.receiveAccount || [], state.type === 'รับ' ? state.account : null,
+    id => { state.account = id; renderPickers(); }
+  );
+  populatePicker(
+    document.getElementById('transferSourceQuick'), document.getElementById('transferSourceSelect'),
+    allAccounts, freq.transferSource || [], state.source,
+    id => { state.source = id; renderPickers(); }
+  );
+  populatePicker(
+    document.getElementById('transferDestQuick'), document.getElementById('transferDestSelect'),
+    allAccounts, freq.transferDest || [], state.dest,
+    id => { state.dest = id; renderPickers(); }
+  );
+  populatePicker(
+    document.getElementById('installmentCardQuick'), document.getElementById('installmentCardSelect'),
+    cardAccounts, freq.installmentCard || [], state.type === 'ผ่อน' ? state.account : null,
+    id => { state.account = id; renderPickers(); }
+  );
+
+  const catFreqKey = { 'จ่าย':'payCategory', 'รับ':'receiveCategory', 'ผ่อน':'installmentCategory' }[state.type];
+  const catList = (meta.categories[state.type] || []).map(name => ({ id: name, name: name }));
+  const catQuick = (catFreqKey && freq[catFreqKey] ? freq[catFreqKey] : []).map(name => ({ id: name, name: name }));
+  populatePicker(
+    document.getElementById('categoryQuick'), document.getElementById('categorySelect'),
+    catList, catQuick, state.category,
+    id => { state.category = id; renderPickers(); }
+  );
+}
+
+/* ---------- เพิ่มหมวดหมู่เอง ---------- */
+
+async function addNewCategory(){
+  const input = document.getElementById('newCategoryInput');
+  const name = input.value.trim();
+  if(!name) return;
+  const btn = document.getElementById('confirmAddCategoryBtn');
+  btn.disabled = true;
+  try{
+    const params = new URLSearchParams({ action:'addCategory', userId: state.userId || '', type: state.type, name: name });
+    const data = await jsonp(WEBAPP_URL + '?' + params.toString());
+    if(data.ok){
+      if(!meta.categories[state.type]) meta.categories[state.type] = [];
+      if(meta.categories[state.type].indexOf(data.name) === -1) meta.categories[state.type].push(data.name);
+      state.category = data.name;
+      document.getElementById('categoryAddRow').style.display = 'none';
+      input.value = '';
+      renderPickers();
+      toast(data.message);
+    } else {
+      toast(data.message || 'เพิ่มหมวดไม่สำเร็จ');
+    }
+  }catch(err){ toast('เชื่อมต่อไม่สำเร็จ ลองใหม่อีกครั้ง'); }
+  btn.disabled = false;
+}
+
+/* ---------- เหตุการณ์ทั่วไป ---------- */
 
 function bindEvents(){
   document.getElementById('tabs').addEventListener('click', e => {
     const btn = e.target.closest('.tab'); if(!btn) return;
-    state.type = btn.dataset.type; state.category = null;
+    state.type = btn.dataset.type;
+    state.category = null; state.account = null; state.source = null; state.dest = null;
+    state.interestType = '0%'; state.interestRate = '';
+    document.getElementById('categoryAddRow').style.display = 'none';
     render();
   });
+
   document.getElementById('keypad').addEventListener('click', e => {
     const btn = e.target.closest('.key'); if(!btn) return;
     const k = btn.dataset.k;
@@ -341,7 +495,42 @@ function bindEvents(){
     else { state.amount = (state.amount === '0') ? k : state.amount + k; }
     document.getElementById('amountDisplay').textContent = state.amount;
   });
+
+  document.getElementById('payAccountSelect').addEventListener('change', e => { state.account = e.target.value || null; renderPickers(); });
+  document.getElementById('payCardSelect').addEventListener('change', e => { state.account = e.target.value || null; renderPickers(); });
+  document.getElementById('receiveAccountSelect').addEventListener('change', e => { state.account = e.target.value || null; renderPickers(); });
+  document.getElementById('transferSourceSelect').addEventListener('change', e => { state.source = e.target.value || null; renderPickers(); });
+  document.getElementById('transferDestSelect').addEventListener('change', e => { state.dest = e.target.value || null; renderPickers(); });
+  document.getElementById('installmentCardSelect').addEventListener('change', e => { state.account = e.target.value || null; renderPickers(); });
+  document.getElementById('categorySelect').addEventListener('change', e => { state.category = e.target.value || null; renderPickers(); });
+
+  document.getElementById('addCategoryBtn').addEventListener('click', () => {
+    const row = document.getElementById('categoryAddRow');
+    row.style.display = (row.style.display === 'none' || !row.style.display) ? 'flex' : 'none';
+    if(row.style.display === 'flex') document.getElementById('newCategoryInput').focus();
+  });
+  document.getElementById('cancelAddCategoryBtn').addEventListener('click', () => {
+    document.getElementById('categoryAddRow').style.display = 'none';
+    document.getElementById('newCategoryInput').value = '';
+  });
+  document.getElementById('confirmAddCategoryBtn').addEventListener('click', addNewCategory);
+
+  document.getElementById('interestToggle').addEventListener('click', e => {
+    const btn = e.target.closest('.seg-btn'); if(!btn) return;
+    state.interestType = btn.dataset.val;
+    if(state.interestType === '0%') state.interestRate = '';
+    renderInterestUI();
+  });
+  document.getElementById('interestRateInput').addEventListener('input', e => { state.interestRate = e.target.value; });
+
   document.getElementById('submitBtn').addEventListener('click', submit);
+}
+
+function renderInterestUI(){
+  document.querySelectorAll('#interestToggle .seg-btn').forEach(b => {
+    b.dataset.active = (b.dataset.val === state.interestType) ? 'true' : 'false';
+  });
+  document.getElementById('interestRateInput').style.display = state.interestType === 'อื่นๆ' ? 'block' : 'none';
 }
 
 function render(){
@@ -350,17 +539,16 @@ function render(){
   document.getElementById('amountDisplay').className = 'amount-value ' + color;
   document.getElementById('submitBtn').className = 'stamp-btn ' + color;
 
-  const isTransfer = state.type === 'โอน';
-  const isInstallment = state.type === 'ผ่อน';
-  document.getElementById('singleAccountField').style.display = isTransfer ? 'none' : 'block';
-  document.getElementById('transferFields').style.display = isTransfer ? 'block' : 'none';
-  document.getElementById('categoryField').style.display = isTransfer ? 'none' : 'block';
-  document.getElementById('totalTermsField').style.display = isInstallment ? 'block' : 'none';
-  document.getElementById('accountLabel').textContent =
-    state.type === 'จ่าย' ? 'จ่ายจากบัญชี/บัตร' :
-    state.type === 'ผ่อน' ? 'ตัดจากบัตร' : 'เข้าบัญชี';
+  document.getElementById('payFields').style.display = state.type === 'จ่าย' ? 'block' : 'none';
+  document.getElementById('receiveFields').style.display = state.type === 'รับ' ? 'block' : 'none';
+  document.getElementById('transferFields').style.display = state.type === 'โอน' ? 'block' : 'none';
+  document.getElementById('installmentFields').style.display = state.type === 'ผ่อน' ? 'block' : 'none';
+  document.getElementById('categoryField').style.display = state.type === 'โอน' ? 'none' : 'block';
+  document.getElementById('totalTermsField').style.display = state.type === 'ผ่อน' ? 'block' : 'none';
+  document.getElementById('interestField').style.display = state.type === 'ผ่อน' ? 'block' : 'none';
 
-  renderCategoryChips();
+  renderPickers();
+  renderInterestUI();
 }
 
 async function submit(){
@@ -376,6 +564,9 @@ async function submit(){
     if(!totalTerms || Number(totalTerms) <= 0 || !Number.isInteger(Number(totalTerms))){
       setStatus('กรอกจำนวนงวดให้ถูกต้อง', 'err'); return;
     }
+    if(state.interestType === 'อื่นๆ' && (!state.interestRate || Number(state.interestRate) < 0)){
+      setStatus('กรอก % ดอกเบี้ยต่อเดือนให้ถูกต้อง', 'err'); return;
+    }
   } else {
     if(!state.account){ setStatus('เลือกบัญชี/บัตรก่อน', 'err'); return; }
   }
@@ -387,7 +578,9 @@ async function submit(){
     action: 'save', userId: state.userId || '', type: state.type, amount: amt,
     accountId: state.account || '', sourceId: state.source || '', destId: state.dest || '',
     category: state.category || '', note: document.getElementById('noteInput').value || '',
-    totalTerms: totalTerms
+    totalTerms: totalTerms,
+    interestType: state.type === 'ผ่อน' ? state.interestType : '',
+    interestRate: (state.type === 'ผ่อน' && state.interestType === 'อื่นๆ') ? state.interestRate : ''
   });
 
   try{
@@ -396,8 +589,9 @@ async function submit(){
       setStatus('บันทึกแล้ว ✅ ' + amt.toLocaleString() + ' บาท', 'ok');
       state.amount = '0'; state.category = null; document.getElementById('noteInput').value = '';
       document.getElementById('totalTermsInput').value = '';
+      state.interestType = '0%'; state.interestRate = '';
       document.getElementById('amountDisplay').textContent = '0';
-      renderCategoryChips();
+      render();
       setTimeout(()=>{ if(liff.isInClient()) liff.closeWindow(); }, 900);
     } else {
       setStatus(data.message || 'บันทึกไม่สำเร็จ', 'err');
