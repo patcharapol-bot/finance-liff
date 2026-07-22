@@ -5,13 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>สรุปยอดบัตร</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cover:#14312A; --cover-dark:#0E241F;
-    --paper:#F6F1E4; --paper-line:#E4DBC4;
-    --ink-red:#B23A2E; --ink-green:#2F6F4E; --ink-blue:#3A5A78; --ink-purple:#6B4C93;
-    --gold:#C9A227; --text-muted:#7A7360; --text-dark:#241F14;
+    --cover:#050806; --cover-dark:#020302;
+    --paper:#081109; --paper-line:#173322;
+    --ink-red:#FF4D3D; --ink-green:#33FF66; --ink-blue:#2FE0A8; --ink-purple:#C9E63A;
+    --gold:#C9E63A;
+    --panel:#0C1912; --panel-alt:#12241A;
+    --text-muted:#5E8A6C; --text-dark:#CFEFD9;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0; padding:0; background:var(--cover); min-height:100%;}
@@ -19,77 +21,93 @@
     font-family:'IBM Plex Sans Thai', sans-serif; color:var(--text-dark);
     background:linear-gradient(180deg, var(--cover) 0%, var(--cover-dark) 100%);
     display:flex; justify-content:center;
+    position:relative;
   }
+  @media (prefers-reduced-motion: no-preference){
+    body::before{
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:50;
+      background:linear-gradient(180deg, transparent, rgba(51,255,102,0.05), transparent);
+      background-size:100% 5px; animation:scan 7s linear infinite; mix-blend-mode:screen;
+    }
+  }
+  @keyframes scan{ 0%{transform:translateY(-100%);} 100%{transform:translateY(100%);} }
   .app{ width:100%; max-width:480px; min-height:100vh; display:flex; flex-direction:column; }
 
   .cover{ padding:22px 20px 16px; position:relative; }
-  .cover::after{ content:''; position:absolute; left:20px; right:20px; bottom:0; height:2px;
-    background:linear-gradient(90deg, transparent, var(--gold), transparent); }
-  .cover h1{ font-family:'Noto Serif Thai', serif; font-weight:700; color:var(--paper); font-size:22px; margin:0 0 2px; }
-  .cover p{ color:#9CB8AC; font-size:12.5px; margin:0; }
+  .cover::after{ content:''; position:absolute; left:20px; right:20px; bottom:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--ink-green), transparent);
+    box-shadow:0 0 8px rgba(51,255,102,.45); }
+  .cover h1{ font-family:'Chakra Petch', sans-serif; font-weight:700; color:var(--ink-green); font-size:22px; margin:0 0 2px;
+    letter-spacing:.04em; text-transform:uppercase; text-shadow:0 0 10px rgba(51,255,102,.55), 0 0 2px rgba(51,255,102,.8); }
+  .cover p{ color:var(--text-muted); font-size:12.5px; margin:0; font-family:'IBM Plex Mono', monospace; }
 
   .tabs{ display:flex; gap:8px; padding:14px 20px 0; }
-  .tab{ flex:1; text-align:center; padding:10px 0; border-radius:8px 8px 0 0; font-weight:600; font-size:14px;
-    color:#B9C9C1; background:rgba(255,255,255,0.05); border:none; font-family:inherit; cursor:pointer; }
-  .tab[data-active="true"]{ background:var(--paper); color:var(--cover); }
+  .tab{ flex:1; text-align:center; padding:10px 0; border-radius:6px 6px 0 0; font-weight:600; font-size:14px;
+    color:var(--text-muted); background:var(--panel); border:1px solid var(--paper-line); border-bottom:none;
+    font-family:'IBM Plex Sans Thai', sans-serif; cursor:pointer; }
+  .tab[data-active="true"]{ background:var(--paper); color:var(--ink-green); text-shadow:0 0 6px rgba(51,255,102,.5); }
 
-  .ledger{ background:var(--paper); flex:1; padding:20px 20px 40px; }
+  .ledger{ background:var(--paper); flex:1; padding:20px 20px 40px; border-top:1px solid var(--paper-line); }
   .view{ display:none; }
   .view[data-active="true"]{ display:block; }
 
   /* ---- การ์ดสรุปบัตร ---- */
-  .card{ background:#fff; border:1px solid var(--paper-line); border-radius:14px; padding:16px; margin-bottom:14px; }
+  .card{ background:var(--panel); border:1px solid var(--paper-line); border-radius:10px; padding:16px; margin-bottom:14px; }
   .card-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
-  .card-name{ font-weight:700; font-size:16px; }
-  .card-sub{ font-size:11.5px; color:var(--text-muted); }
-  .util-bar-track{ height:8px; border-radius:5px; background:#EFE8D6; overflow:hidden; margin-bottom:6px; }
-  .util-bar-fill{ height:100%; border-radius:5px; }
-  .util-label{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-muted); margin-bottom:14px; }
+  .card-name{ font-weight:700; font-size:16px; font-family:'Chakra Petch', sans-serif; color:var(--text-dark); }
+  .card-sub{ font-size:11.5px; color:var(--text-muted); font-family:'IBM Plex Mono', monospace; }
+  .util-bar-track{ height:8px; border-radius:4px; background:var(--panel-alt); overflow:hidden; margin-bottom:6px; border:1px solid var(--paper-line); }
+  .util-bar-fill{ height:100%; border-radius:3px; }
+  .util-label{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-muted); margin-bottom:14px; font-family:'IBM Plex Mono', monospace; }
   .stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .stat{ background:#FAF6EA; border-radius:8px; padding:8px 10px; }
-  .stat-label{ font-size:10.5px; color:var(--text-muted); margin-bottom:3px; }
-  .stat-value{ font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:15px; }
-  .stat-value.due{ color:var(--ink-red); }
-  .due-date-tag{ font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+  .stat{ background:var(--panel-alt); border:1px solid var(--paper-line); border-radius:6px; padding:8px 10px; }
+  .stat-label{ font-size:10.5px; color:var(--text-muted); margin-bottom:3px; font-family:'IBM Plex Mono', monospace; text-transform:uppercase; }
+  .stat-value{ font-family:'IBM Plex Mono', monospace; font-weight:700; font-size:15px; color:var(--ink-green); }
+  .stat-value.due{ color:var(--ink-red); text-shadow:0 0 8px rgba(255,77,61,.35); }
+  .due-date-tag{ font-size:10.5px; color:var(--text-muted); margin-top:2px; font-family:'IBM Plex Mono', monospace; }
 
-  .empty-note{ text-align:center; color:var(--text-muted); font-size:13.5px; padding:30px 10px; }
+  .empty-note{ text-align:center; color:var(--text-muted); font-size:13.5px; padding:30px 10px; font-family:'IBM Plex Mono', monospace; }
 
   /* ---- จัดการบัญชี ---- */
-  .acc-list-item{ display:flex; justify-content:space-between; align-items:center; background:#fff;
-    border:1px solid var(--paper-line); border-radius:10px; padding:12px 14px; margin-bottom:8px; cursor:pointer; }
-  .acc-list-item[data-inactive="true"]{ opacity:.45; }
-  .acc-name{ font-weight:600; font-size:14px; }
-  .acc-sub{ font-size:11.5px; color:var(--text-muted); }
-  .acc-edit{ color:var(--text-muted); font-size:18px; }
+  .acc-list-item{ display:flex; justify-content:space-between; align-items:center; background:var(--panel);
+    border:1px solid var(--paper-line); border-radius:8px; padding:12px 14px; margin-bottom:8px; cursor:pointer; }
+  .acc-list-item[data-inactive="true"]{ opacity:.4; }
+  .acc-name{ font-weight:600; font-size:14px; color:var(--text-dark); }
+  .acc-sub{ font-size:11.5px; color:var(--text-muted); font-family:'IBM Plex Mono', monospace; }
+  .acc-edit{ color:var(--ink-green); font-size:18px; }
 
-  .add-btn{ width:100%; padding:13px 0; border-radius:10px; border:1.5px dashed var(--paper-line);
-    background:transparent; color:var(--text-muted); font-family:inherit; font-size:14px; font-weight:600;
-    cursor:pointer; margin-bottom:14px; }
+  .add-btn{ width:100%; padding:13px 0; border-radius:8px; border:1.5px dashed var(--paper-line);
+    background:transparent; color:var(--ink-green); font-family:'Chakra Petch', sans-serif; font-size:14px; font-weight:600;
+    cursor:pointer; margin-bottom:14px; letter-spacing:.03em; }
 
   /* ---- ฟอร์มแบบ modal เลื่อนขึ้นจากล่าง ---- */
-  .sheet-overlay{ position:fixed; inset:0; background:rgba(20,49,42,0.55); display:none; z-index:20; }
+  .sheet-overlay{ position:fixed; inset:0; background:rgba(2,5,3,0.75); display:none; z-index:20; }
   .sheet-overlay[data-open="true"]{ display:block; }
   .sheet{ position:fixed; left:0; right:0; bottom:0; max-width:480px; margin:0 auto; background:var(--paper);
-    border-radius:18px 18px 0 0; padding:20px 20px calc(20px + env(safe-area-inset-bottom)); max-height:88vh; overflow-y:auto; }
-  .sheet-title{ font-family:'Noto Serif Thai', serif; font-weight:700; font-size:17px; margin:0 0 14px; }
+    border-top:1px solid var(--ink-green); border-radius:14px 14px 0 0; padding:20px 20px calc(20px + env(safe-area-inset-bottom));
+    max-height:88vh; overflow-y:auto; }
+  .sheet-title{ font-family:'Chakra Petch', sans-serif; font-weight:700; font-size:17px; margin:0 0 14px; color:var(--ink-green);
+    text-transform:uppercase; letter-spacing:.03em; }
   .form-field{ margin-bottom:12px; }
-  .form-label{ font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:6px; }
-  .form-input, .form-select{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid var(--paper-line);
-    font-family:inherit; font-size:14px; background:#fff; color:var(--text-dark); }
+  .form-label{ font-size:12px; color:var(--text-muted); font-weight:600; margin-bottom:6px; font-family:'IBM Plex Mono', monospace; text-transform:uppercase; letter-spacing:.05em; }
+  .form-input, .form-select{ width:100%; padding:10px 12px; border-radius:6px; border:1px solid var(--paper-line);
+    font-family:inherit; font-size:14px; background:var(--panel); color:var(--text-dark); }
+  .form-input:focus, .form-select:focus{ outline:none; border-color:var(--ink-green); box-shadow:0 0 0 1px var(--ink-green); }
   .form-row2{ display:flex; gap:10px; }
   .form-row2 > div{ flex:1; }
   .toggle-row{ display:flex; align-items:center; justify-content:space-between; padding:6px 0; }
   .form-actions{ display:flex; gap:10px; margin-top:16px; }
-  .btn{ flex:1; padding:13px 0; border-radius:10px; border:none; font-family:inherit; font-weight:600; font-size:14.5px; cursor:pointer; }
-  .btn.primary{ background:var(--cover); color:var(--paper); }
-  .btn.ghost{ background:#fff; color:var(--text-muted); border:1px solid var(--paper-line); }
-  .status{ text-align:center; font-size:13px; color:var(--text-muted); min-height:18px; margin-top:8px; }
+  .btn{ flex:1; padding:13px 0; border-radius:8px; border:1px solid; font-family:'Chakra Petch', sans-serif; font-weight:600;
+    font-size:14.5px; cursor:pointer; text-transform:uppercase; letter-spacing:.03em; background:transparent; }
+  .btn.primary{ background:var(--ink-green); color:var(--cover-dark); border-color:var(--ink-green); }
+  .btn.ghost{ background:transparent; color:var(--text-muted); border-color:var(--paper-line); }
+  .status{ text-align:center; font-size:13px; color:var(--text-muted); min-height:18px; margin-top:8px; font-family:'IBM Plex Mono', monospace; }
   .status.ok{ color:var(--ink-green); font-weight:600; }
   .status.err{ color:var(--ink-red); font-weight:600; }
 
-  .toast{ position:fixed; top:16px; left:50%; transform:translateX(-50%); background:var(--cover); color:var(--paper);
-    padding:10px 18px; border-radius:8px; font-size:13.5px; opacity:0; transition:opacity .25s; pointer-events:none;
-    max-width:90%; text-align:center; z-index:30; }
+  .toast{ position:fixed; top:16px; left:50%; transform:translateX(-50%); background:var(--panel); color:var(--ink-green);
+    padding:10px 18px; border-radius:6px; border:1px solid var(--ink-green); font-size:13.5px; opacity:0; transition:opacity .25s; pointer-events:none;
+    max-width:90%; text-align:center; font-family:'IBM Plex Mono', monospace; z-index:30; }
   .toast.show{ opacity:1; }
 </style>
 </head>
@@ -166,7 +184,7 @@
     </div>
     <div class="toggle-row">
       <div class="form-label" style="margin:0;">ใช้งานอยู่ (Active)</div>
-      <input type="checkbox" id="f_active" checked style="width:20px;height:20px;">
+      <input type="checkbox" id="f_active" checked style="width:20px;height:20px;accent-color:var(--ink-green);">
     </div>
 
     <div class="status" id="formStatus"></div>
@@ -286,7 +304,7 @@ function renderCards(cards){
           <div class="card-sub">วงเงิน ${c.creditLimit.toLocaleString()} บ.</div>
         </div>
       </div>
-      <div class="util-bar-track"><div class="util-bar-fill" style="width:${Math.min(c.utilizationPct,100)}%; background:${color};"></div></div>
+      <div class="util-bar-track"><div class="util-bar-fill" style="width:${Math.min(c.utilizationPct,100)}%; background:${color}; box-shadow:0 0 8px ${color};"></div></div>
       <div class="util-label">
         <span>ใช้ไป ${c.totalOutstanding.toLocaleString()} บ. (${c.utilizationPct}%)</span>
         <span>เหลือ ${c.availableCredit.toLocaleString()} บ.</span>
